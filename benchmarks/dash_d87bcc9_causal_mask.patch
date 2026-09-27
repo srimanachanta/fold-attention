@@ -1,0 +1,18 @@
+diff --git a/hopper/mainloop_bwd_sm90_tma_gmma_ws.hpp b/hopper/mainloop_bwd_sm90_tma_gmma_ws.hpp
+index 451d7dd..073e86a 100644
+--- a/hopper/mainloop_bwd_sm90_tma_gmma_ws.hpp
++++ b/hopper/mainloop_bwd_sm90_tma_gmma_ws.hpp
+@@ -1098,8 +1098,12 @@ struct CollectiveMainloopBwdSm90 {
+             ? m_block_max
+             : std::min(m_block_max, (n_block * kBlockN + seqlen_q - seqlen_k + params.window_size_left) / kBlockM);
+ 
++        // m-blocks below this straddle the causal/local diagonal and take the mask.
++        // Upstream FA-3's masked loop ran [m_block_min, m_block_masking_max); a
++        // trailing `- 1` here left the diagonal block of each n-block unmasked
++        // whenever SeparateMaskingIterations (head dim <= 64).
+         int const m_block_min_stage2 = ((Is_causal || Is_local) && SeparateMaskingIterations)
+-                                        ? std::min(m_block_max, ((n_block + 1) * kBlockN - 1 + seqlen_q - seqlen_k - params.window_size_right) / kBlockM + 1) - 1
++                                        ? std::min(m_block_max, ((n_block + 1) * kBlockN - 1 + seqlen_q - seqlen_k - params.window_size_right) / kBlockM + 1)
+                                         : m_block_min;
+ 
+         CUTLASS_PRAGMA_NO_UNROLL
