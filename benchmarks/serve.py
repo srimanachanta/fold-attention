@@ -59,6 +59,8 @@ import statistics
 import string
 import time
 import traceback
+from collections.abc import Callable
+from typing import Any
 
 import torch
 
@@ -403,7 +405,7 @@ def speed(args, rep, tok, hf, M, flusher):
         qb = torch.empty(Bz, M.H, M.D, device="cuda", dtype=torch.bfloat16)
         kb = torch.empty(Bz, M.HKV, M.D, device="cuda", dtype=torch.bfloat16)
         vb = torch.empty_like(kb)
-        builders = [
+        builders: list[tuple[str, Callable[..., Any], tuple]] = [
             ("FA-3", arm_fa3, ()),
             ("FlashInfer", arm_flashinfer, ()),
             ("cuDNN", arm_cudnn, ()),

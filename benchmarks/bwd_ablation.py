@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import traceback
+from typing import Any
 
 import torch
 
@@ -43,8 +44,10 @@ BASELINES = ("FA-3", "FA-3 det", "FA-4", "FA-4 det")
 
 def variant_arm(name, inp: T.Inputs) -> T.Arm:
     kw = VARIANTS[name]
-    t = [x.transpose(1, 2) for x in (inp.q, inp.k, inp.v, inp.o, inp.do)]
-    launch = prepare_backward_variant(*t, inp.lse, causal=inp.causal, softmax_scale=inp.scale, **kw)
+    q, k, v, o, do = (x.transpose(1, 2) for x in (inp.q, inp.k, inp.v, inp.o, inp.do))
+    launch = prepare_backward_variant(
+        q, k, v, o, do, inp.lse, causal=inp.causal, softmax_scale=inp.scale, **kw
+    )
 
     def grads():
         return tuple(x.transpose(1, 2) for x in launch.run())
@@ -124,7 +127,7 @@ def run_shape(shape, set_name, args, rep, flusher, fa3):
         cold=True,
         flusher=flusher,
     )
-    rows = []
+    rows: list[dict[str, Any]] = []
     for n, a in arms.items():
         rows.append(
             dict(

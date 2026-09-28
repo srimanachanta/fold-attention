@@ -27,6 +27,7 @@ import argparse
 import math
 import traceback
 from pathlib import Path
+from typing import Any
 
 import torch
 
@@ -93,7 +94,7 @@ def score(x, ref, G):
     ulp = torch.exp2(torch.floor(torch.log2(aref[keep])) - 7)
     in_ulp = err[keep] / ulp
     srt = rel.sort().values
-    out = dict(
+    out: dict[str, Any] = dict(
         n=int(keep.sum()),
         n_zero_ref=int((~keep).sum()),
         rel_l2=float(err.norm() / ref.norm()),
@@ -154,7 +155,7 @@ def pair_score(a, b, ref, G):
     rel = d / aref[keep]
     ulp = torch.exp2(torch.floor(torch.log2(aref[keep])) - 7)
     bins = torch.floor(torch.log2(aref[keep] / group_max(ref, G)[keep])).clamp(min=-BINADES)
-    out = dict(
+    out: dict[str, Any] = dict(
         frac_differ=float((d > 0).double().mean()),
         rel_p50=_pct(rel.sort().values, 50),
         rel_p99=_pct(rel.sort().values, 99),

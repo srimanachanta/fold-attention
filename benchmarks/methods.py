@@ -53,6 +53,7 @@ from __future__ import annotations
 import argparse
 import math
 import traceback
+from typing import Any
 
 import torch
 
@@ -573,7 +574,7 @@ def run_case(name, args, rep, flusher, cut_rows):
                     bytes_counted=F.bytes_read(dict(fr, v8=kw["v8"]), keys, D) / keys,
                 )
             )
-            row = dict(
+            row: dict[str, Any] = dict(
                 split=split,
                 kernel=dict(live=fr["live"], refined=fr["refined"]),
                 z_emulated=emu,

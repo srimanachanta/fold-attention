@@ -42,6 +42,7 @@ from __future__ import annotations
 import argparse
 import math
 import traceback
+from typing import Any
 
 import torch
 
@@ -309,7 +310,7 @@ def cascade_case(cap, n_req, levels, U, args, rep, flusher, kind="cascade"):
     # each level's pieces: its request ranges, their copies of the documents
     # they hold, paged over the documents' pages, and an image where the level
     # is stacked past 64 rows or at 64
-    pieces = []
+    pieces: list[dict[str, Any]] = []
     for li, (n, gr) in enumerate(levels):
         rows, G_s = cascade_rows(n_req, G, HKV, _level_groups(n_req, gr), dev)
         ng = rows.shape[0] // HKV
@@ -393,7 +394,7 @@ def cascade_case(cap, n_req, levels, U, args, rep, flusher, kind="cascade"):
             # a level stacked past 64 rows, or at 64, runs on the wide kernel,
             # which reads it as tiles built once per prefix, as a server would
             # when the prefix is cached
-            image = prefix_image(*pc["planes"], pc["v"]) if pc["G_s"] >= 64 else None
+            image = prefix_image(*pc["planes"], v=pc["v"]) if pc["G_s"] >= 64 else None
             shared.append(
                 SharedPrefix(
                     rows=pc["rows"],

@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import math
 import traceback
+from typing import Any
 
 import torch
 
@@ -74,7 +75,7 @@ def run_cell(name, S, ragged, args, rep, flusher):
         if not w.spec.fp8
     }
     arms = {w.spec.name: w.spec.fn for w in won.values()}
-    meta = {
+    meta: dict[str, dict[str, Any]] = {
         w.spec.name: dict(
             family=w.spec.family, provenance=w.spec.provenance, err=w.err, bytes=keys * 4 * D
         )

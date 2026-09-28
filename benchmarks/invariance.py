@@ -45,33 +45,24 @@ def maxdiff(a, b) -> float:
 
 
 def _cat_dense(a: T.Inputs, b: T.Inputs) -> T.Inputs:
-    return T.Inputs(
-        *(
-            torch.cat([x, y])
-            for x, y in zip(
-                (a.q, a.k, a.v, a.o, a.do, a.lse), (b.q, b.k, b.v, b.o, b.do, b.lse), strict=True
-            )
-        ),
-        a.causal,
-        a.scale,
-        a.lens + b.lens,
+    q, k, v, o, do, lse = (
+        torch.cat([x, y])
+        for x, y in zip(
+            (a.q, a.k, a.v, a.o, a.do, a.lse), (b.q, b.k, b.v, b.o, b.do, b.lse), strict=True
+        )
     )
+    return T.Inputs(q, k, v, o, do, lse, a.causal, a.scale, a.lens + b.lens)
 
 
 def _cat_varlen(a: T.Inputs, b: T.Inputs) -> T.Inputs:
     assert a.cu is not None and b.cu is not None
     cu = torch.cat([a.cu, b.cu[1:] + a.cu[-1]])
-    return T.Inputs(
-        *(
-            torch.cat([x, y])
-            for x, y in zip((a.q, a.k, a.v, a.o, a.do), (b.q, b.k, b.v, b.o, b.do), strict=True)
-        ),
-        torch.cat([a.lse, b.lse], dim=1),
-        True,
-        a.scale,
-        a.lens + b.lens,
-        cu,
+    q, k, v, o, do = (
+        torch.cat([x, y])
+        for x, y in zip((a.q, a.k, a.v, a.o, a.do), (b.q, b.k, b.v, b.o, b.do), strict=True)
     )
+    lse = torch.cat([a.lse, b.lse], dim=1)
+    return T.Inputs(q, k, v, o, do, lse, True, a.scale, a.lens + b.lens, cu)
 
 
 def _grads(arm, first_of=None):

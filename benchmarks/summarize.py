@@ -206,7 +206,7 @@ def headline_section():
     baseline's; B: within the BF16 baselines' range."""
     out = [
         "## Headline: fixed members at the step boundary\n\n",
-        headline_section.__doc__.split("\n\n")[0].replace("\n", " ").strip() + "\n\n",
+        (headline_section.__doc__ or "").split("\n\n")[0].replace("\n", " ").strip() + "\n\n",
     ]
     rng = defaultdict(list)
     d = load("generate")
