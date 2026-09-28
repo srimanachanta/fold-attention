@@ -51,6 +51,32 @@ allowed-unresolved-imports = [
 ]
 replace-imports-with-any = ["cutlass._mlir.**"]
 
+# CuTe DSL kernels. The DSL's annotations cannot follow traced code: a
+# `const_expr(x is not None)` branch does not narrow `x`, `cute.math`
+# functions are generated at import, `Shape` and `.iterator` are wide unions
+# (int, Integer, tuple, ...), `cute.struct` fields are subscripted classes, and
+# flash-attn's `Int32` parameters take Python ints that the DSL promotes.
+[[tool.ty.overrides]]
+include = [
+    "src/fold_attention/backward/kernel.py",
+    "src/fold_attention/backward/postprocess.py",
+    "src/fold_attention/backward/preprocess.py",
+    "src/fold_attention/decode/combine.py",
+    "src/fold_attention/decode/front.py",
+    "src/fold_attention/decode/kernel.py",
+    "src/fold_attention/decode/reference.py",
+    "src/fold_attention/decode/write.py",
+]
+
+[tool.ty.overrides.rules]
+invalid-argument-type = "ignore"
+invalid-assignment = "ignore"
+invalid-return-type = "ignore"
+no-matching-overload = "ignore"
+not-subscriptable = "ignore"
+unresolved-attribute = "ignore"
+unsupported-operator = "ignore"
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
