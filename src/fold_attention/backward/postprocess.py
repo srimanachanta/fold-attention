@@ -15,7 +15,7 @@ import cutlass
 import cutlass.utils.hopper_helpers as sm90_utils_basic
 from cutlass import Float32, const_expr, cute
 from cutlass.cute.nvgpu import cpasync
-from cutlass.utils import LayoutEnum
+from cutlass.tensor_utils import LayoutEnum
 from flash_attn.cute import utils
 from flash_attn.cute.cute_dsl_utils import assume_tensor_aligned
 from flash_attn.cute.seqlen_info import SeqlenInfoQK
