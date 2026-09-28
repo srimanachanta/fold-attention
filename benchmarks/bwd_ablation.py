@@ -23,12 +23,12 @@ import argparse
 import traceback
 
 import torch
-from exact_fold_attn.backward.ablation import prepare_backward_variant
 
 from benchmarks.backward import SANITY, SETS
 from benchmarks.harness import training as T
 from benchmarks.harness.report import Report
 from benchmarks.harness.timing import L2Flush, measure, paired_ratio
+from fold_attention.backward.ablation import prepare_backward_variant
 
 # name -> `prepare_backward_variant`'s switches
 VARIANTS = {
@@ -54,7 +54,7 @@ def variant_arm(name, inp: T.Inputs) -> T.Arm:
         "FoldAttention ablation",
         launch.run,
         grads,
-        f"exact_fold_attn.backward.ablation.prepare_backward_variant("
+        f"fold_attention.backward.ablation.prepare_backward_variant("
         f"{', '.join(f'{k}={v!r}' for k, v in kw.items())}, plan={launch.plan})",
         not kw["fp32_dq"],
         held=(launch,),

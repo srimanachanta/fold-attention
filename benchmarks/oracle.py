@@ -23,13 +23,13 @@ import math
 import traceback
 
 import torch
-from exact_fold_attn.decode import prepare_fold_decode, quantize_k, quantize_q
-from exact_fold_attn.decode.heuristics import refine_for, weight_terms_for
 
 from benchmarks.harness import baselines as B
 from benchmarks.harness import captures as C
 from benchmarks.harness.report import Report
 from benchmarks.harness.timing import L2Flush, measure
+from fold_attention.decode import prepare_fold_decode, quantize_k, quantize_q
+from fold_attention.decode.heuristics import refine_for, weight_terms_for
 
 LOG2E = 1.4426950408889634
 # (D, G, capture, H_KV) at 256 row groups

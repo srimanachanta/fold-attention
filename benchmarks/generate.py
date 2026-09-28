@@ -26,13 +26,13 @@ import traceback
 from dataclasses import dataclass
 
 import torch
-from exact_fold_attn import FoldKVCache
 
 from benchmarks.harness import baselines as B
 from benchmarks.harness import captures as C
 from benchmarks.harness import fold as F
 from benchmarks.harness.report import Report
 from benchmarks.harness.timing import L2Flush, measure, paired_ratio
+from fold_attention import FoldKVCache
 
 CASES = {
     "qwen_b8_16k": ("qwen3-30b-l24-d128", 8, 16384, 16384),
@@ -232,7 +232,7 @@ def run_case(name, args, rep, flusher):
             err_worst=max(trace[n]),
             live=statistics.mean(live[n]),
             nan_rows=nan_rows[n],
-            provenance=f"exact_fold_attn.FoldKVCache(page_size={B.PAGE}, depth={m.depth}, "
+            provenance=f"fold_attention.FoldKVCache(page_size={B.PAGE}, depth={m.depth}, "
             f"v8={m.v8}"
             + (", refine_k=-1e4, refine_v=-1e4" if n.startswith("Fold capacity") else "")
             + (f", chunk={m.chunk}" if m.chunk else "")

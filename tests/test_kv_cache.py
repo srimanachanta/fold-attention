@@ -16,10 +16,11 @@ import torch
 
 cuda = torch.cuda.is_available() and torch.cuda.get_device_capability()[0] == 9
 if cuda:
-    from exact_fold_attn import FoldKVCache, fold_attn_with_kvcache
-    from exact_fold_attn.decode import write
-    from exact_fold_attn.decode.launch import _prepare
     from flash_attn.cute import flash_attn_varlen_func
+
+    from fold_attention import FoldKVCache, fold_attn_with_kvcache
+    from fold_attention.decode import write
+    from fold_attention.decode.launch import _prepare
 
 pytestmark = pytest.mark.skipif(not cuda, reason="needs an SM90 GPU")
 
@@ -573,7 +574,7 @@ def test_the_cache_refuses_what_it_cannot_hold():
 def _linear_v(reqs, HKV, D, seed=5):
     """V made linear in the rotated K through a rank-16 map plus a per-block
     offset, which is what the tail's rank term predicts exactly."""
-    from exact_fold_attn.utils import hadamard
+    from fold_attention.utils import hadamard
 
     g = torch.Generator(device="cuda").manual_seed(seed)
     A = torch.randn(HKV, D, 16, device="cuda", generator=g) / math.sqrt(D)
@@ -595,7 +596,7 @@ def test_the_serving_tail_keeps_every_block_row_current():
     projection is its plane-A integers against the map, exact, times its own
     `ek / 256`; the prompt sums a block's in f64 and the append adds each new
     one in f32, so the sums agree to rounding rather than to the bit."""
-    from exact_fold_attn.decode.cache import KBR, key_planes
+    from fold_attention.decode.cache import KBR, key_planes
 
     H, HKV, D, lens, extra = 16, 2, 128, [300, 700], 90
     reqs = _batch(lens, H, HKV, D, extra, seed=3)
@@ -670,7 +671,7 @@ def test_a_prepared_step_owns_the_temporaries_it_was_bound_to():
     must stay alive through the allocator's churn, and take the step's sums."""
     import gc
 
-    from exact_fold_attn.decode import write as fstep
+    from fold_attention.decode import write as fstep
 
     H, HKV, D, lens = 16, 2, 128, [700, 900]
     reqs = _batch(lens, H, HKV, D, 1, seed=4)

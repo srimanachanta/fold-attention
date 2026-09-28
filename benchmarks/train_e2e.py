@@ -41,7 +41,7 @@ def attention_fn(name, fa3, dash):
     """The registry entry for arm `name`: `(module, q, k, v, mask, ...)` with
     `(B, H, S, D)` operands, returning `(B, S, H, D)`."""
     if name == "FoldAttention":
-        from exact_fold_attn import fold_attn_func as f
+        from fold_attention import fold_attn_func as f
 
         def call(q, k, v, sc):
             return f(q, k, v, softmax_scale=sc, causal=True)

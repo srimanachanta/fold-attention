@@ -345,7 +345,7 @@ def arm_cudnn(k, v, lens, M):
 def fold_caches(k, v, lens, M, kw, room=64, v_scales=None):
     """One `FoldKVCache` per layer holding the prompts, with `room` tokens to
     grow; an 8-bit V takes `v_scales[i]` in layer `i` where given."""
-    from exact_fold_attn import FoldKVCache
+    from fold_attention import FoldKVCache
 
     B = len(lens)
     cu = torch.tensor([0, *torch.tensor(lens).cumsum(0).tolist()], device="cuda", dtype=torch.int32)
@@ -371,7 +371,7 @@ def arm_fold(k, v, lens, M, kw, bufs):
         o = replays[i]()[0]
         return o.view(q.shape).to(q.dtype)
 
-    return attend, (caches, replays, at), f"exact_fold_attn.FoldKVCache({kw}), page 128"
+    return attend, (caches, replays, at), f"fold_attention.FoldKVCache({kw}), page 128"
 
 
 def graph_step(M, attend, tok, pos):

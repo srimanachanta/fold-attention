@@ -21,10 +21,10 @@ import math
 import traceback
 
 import torch
-from exact_fold_attn import FoldKVCache
 
 from benchmarks.harness.report import Report
 from benchmarks.harness.timing import L2Flush, measure, paired_ratio
+from fold_attention import FoldKVCache
 
 # (H, H_KV, D) of each captured model
 MODELS = {"qwen3-30b": (32, 4, 128), "glm4-9b": (32, 2, 128), "gptoss-20b": (64, 8, 64)}

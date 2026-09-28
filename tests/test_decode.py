@@ -25,7 +25,7 @@ import torch
 
 cute_available = torch.cuda.is_available() and torch.cuda.get_device_capability()[0] == 9
 if cute_available:
-    from exact_fold_attn.decode import (
+    from fold_attention.decode import (
         SharedPrefix,
         capture_decode,
         fold_decode,
@@ -34,7 +34,7 @@ if cute_available:
         prefix_image,
         prepare_fold_decode,
     )
-    from exact_fold_attn.decode.cache import (
+    from fold_attention.decode.cache import (
         KBR,
         Tail,
         key_planes,
@@ -49,10 +49,10 @@ if cute_available:
         tail_model,
         write_kv,
     )
-    from exact_fold_attn.decode.config import smem_bytes
-    from exact_fold_attn.decode.heuristics import resident, v8_live_fraction, weight_terms_for
-    from exact_fold_attn.decode.launch import _prepare
-    from exact_fold_attn.decode.rows import (
+    from fold_attention.decode.config import smem_bytes
+    from fold_attention.decode.heuristics import resident, v8_live_fraction, weight_terms_for
+    from fold_attention.decode.launch import _prepare
+    from fold_attention.decode.rows import (
         cascade_degree,
         cascade_rows,
         draft_mask,
@@ -60,7 +60,7 @@ if cute_available:
         pack_tree,
         unpack_rows,
     )
-    from exact_fold_attn.utils import hadamard, rotation
+    from fold_attention.utils import hadamard, rotation
 
 pytestmark = pytest.mark.skipif(not cute_available, reason="needs an SM90 GPU")
 
@@ -1411,7 +1411,7 @@ _SWEPT_NEAR = [
 
 @pytest.mark.parametrize("D, G, depth, nbh, mean, longest, near", _SWEPT_NEAR)
 def test_the_bf16_split_lands_near_the_swept_best(D, G, depth, nbh, mean, longest, near):
-    from exact_fold_attn.decode.heuristics import tail_rank_for, weight_terms_for
+    from fold_attention.decode.heuristics import tail_rank_for, weight_terms_for
 
     skip = depth is not None
     sp = pick_split(
@@ -2862,7 +2862,7 @@ def test_the_tail_is_refused_where_it_cannot_run():
 
 
 def test_the_tail_rank_follows_the_measured_policy():
-    from exact_fold_attn.decode.heuristics import tail_rank_for
+    from fold_attention.decode.heuristics import tail_rank_for
 
     assert tail_rank_for(128, 8, False) == 16
     assert tail_rank_for(64, 16, False) == 16
@@ -2872,7 +2872,7 @@ def test_the_tail_rank_follows_the_measured_policy():
 
 
 def test_the_mass_gates_follow_the_measured_rule():
-    from exact_fold_attn.decode.heuristics import refine_for, weight_terms_for
+    from fold_attention.decode.heuristics import refine_for, weight_terms_for
 
     def mass(depth, v8=False, S=4096, D=128, G=8, tail=True):
         return refine_for(depth, v8, seq_len=S, head_dim=D, group=G, tail=tail)
@@ -2897,7 +2897,7 @@ def test_the_mass_gates_follow_the_measured_rule():
 
 
 def test_the_front_register_rule_follows_the_measurements():
-    from exact_fold_attn.decode.heuristics import front_min_blocks, resident
+    from fold_attention.decode.heuristics import front_min_blocks, resident
 
     # a D128 register-V build up to G = 8 always asks for the deep cap's six
     assert front_min_blocks(128, 8, True, True, True, -1, 2) == 6

@@ -318,7 +318,7 @@ def _backward_arm(name, inp: Inputs, fa3, dash) -> Arm:
             det,
         )
     if name == "FoldAttention":
-        from exact_fold_attn.backward import prepare_backward
+        from fold_attention.backward import prepare_backward
 
         if inp.varlen:
             launch = prepare_backward(
@@ -348,7 +348,7 @@ def _backward_arm(name, inp: Inputs, fa3, dash) -> Arm:
             "FoldAttention",
             launch.run,
             grads,
-            f"exact_fold_attn.backward.prepare_backward(plan={launch.plan})",
+            f"fold_attention.backward.prepare_backward(plan={launch.plan})",
             True,
             held=(launch,),
         )
@@ -417,12 +417,12 @@ def _train_arm(name, inp: Inputs, fa3, dash) -> Arm:
     q, k, v = (x.detach().requires_grad_(True) for x in (inp.q, inp.k, inp.v))
     do, causal, sc = inp.do, inp.causal, inp.scale
     if name == "FoldAttention":
-        from exact_fold_attn import fold_attn_func
+        from fold_attention import fold_attn_func
 
         def f():
             return fold_attn_func(q, k, v, softmax_scale=sc, causal=causal)
 
-        prov, det = "exact_fold_attn.fold_attn_func (FA-4 forward, folded backward)", True
+        prov, det = "fold_attention.fold_attn_func (FA-4 forward, folded backward)", True
     elif name in ("FA-3", "FA-3 det"):
         if fa3 is None:
             raise RuntimeError("FA-3 is not loaded in this process")

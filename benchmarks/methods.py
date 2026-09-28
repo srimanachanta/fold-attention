@@ -55,8 +55,6 @@ import math
 import traceback
 
 import torch
-from exact_fold_attn import FoldKVCache
-from exact_fold_attn.decode.config import BN
 
 from benchmarks.generate import CASES
 from benchmarks.harness import baselines as B
@@ -64,6 +62,8 @@ from benchmarks.harness import captures as C
 from benchmarks.harness import fold as F
 from benchmarks.harness.report import Report
 from benchmarks.harness.timing import L2Flush
+from fold_attention import FoldKVCache
+from fold_attention.decode.config import BN
 
 LOG2E = 1.0 / math.log(2.0)
 DEPTHS = (20, 18, 16, 14, 13, 12)

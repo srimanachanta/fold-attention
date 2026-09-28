@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import torch
 
-from exact_fold_attn import FoldKVCache
+from fold_attention import FoldKVCache
 
 
 def prompt(shape, lens):
@@ -105,7 +105,7 @@ def member(
         kernel=kernel,
         **fractions(counts, lens, HKV),
         provenance=(
-            f"exact_fold_attn.FoldKVCache(page_size={page}, depth={depth}, v8={v8}, "
+            f"fold_attention.FoldKVCache(page_size={page}, depth={depth}, v8={v8}, "
             f"tail={tail!r}, refine_k={refine_k}, refine_v={refine_v}, "
             f"weight_terms={weight_terms}, chunk={chunk}) split={sp}, {kernel}, "
             "bf16 out"

@@ -17,18 +17,19 @@ import torch
 
 cute_available = torch.cuda.is_available() and torch.cuda.get_device_capability()[0] == 9
 if cute_available:
-    from exact_fold_attn import fold_attn_func, fold_attn_varlen_func
-    from exact_fold_attn.backward import (
+    from flash_attn.cute import flash_attn_func, flash_attn_varlen_func
+    from flash_attn.cute.interface import _flash_attn_bwd, _flash_attn_fwd
+
+    from fold_attention import fold_attn_func, fold_attn_varlen_func
+    from fold_attention.backward import (
         Plan,
         plan_dense,
         plan_varlen,
         prepare_backward,
         tile_config,
     )
-    from exact_fold_attn.backward import launch as backward_launch
-    from exact_fold_attn.backward.ablation import prepare_backward_variant
-    from flash_attn.cute import flash_attn_func, flash_attn_varlen_func
-    from flash_attn.cute.interface import _flash_attn_bwd, _flash_attn_fwd
+    from fold_attention.backward import launch as backward_launch
+    from fold_attention.backward.ablation import prepare_backward_variant
 
 pytestmark = pytest.mark.skipif(not cute_available, reason="needs an SM90 GPU")
 

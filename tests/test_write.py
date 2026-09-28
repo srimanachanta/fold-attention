@@ -14,8 +14,8 @@ import torch
 
 cuda = torch.cuda.is_available() and torch.cuda.get_device_capability()[0] == 9
 if cuda:
-    from exact_fold_attn.decode.cache import quantize_kq, write_kv, write_rows
-    from exact_fold_attn.decode.write import step, write_prompt
+    from fold_attention.decode.cache import quantize_kq, write_kv, write_rows
+    from fold_attention.decode.write import step, write_prompt
 
 pytestmark = pytest.mark.skipif(not cuda, reason="needs an SM90 GPU")
 

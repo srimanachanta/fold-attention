@@ -44,7 +44,14 @@ import math
 import traceback
 
 import torch
-from exact_fold_attn.decode import (
+
+from benchmarks.harness import baselines as B
+from benchmarks.harness import captures as C
+from benchmarks.harness import fold as F
+from benchmarks.harness import prior
+from benchmarks.harness.report import Report
+from benchmarks.harness.timing import L2Flush, measure, paired_ratio
+from fold_attention.decode import (
     SharedPrefix,
     cascade_rows,
     draft_mask,
@@ -57,14 +64,7 @@ from exact_fold_attn.decode import (
     quantize_q,
     unpack_rows,
 )
-from exact_fold_attn.decode.heuristics import refine_for, shared_runs_wide, weight_terms_for
-
-from benchmarks.harness import baselines as B
-from benchmarks.harness import captures as C
-from benchmarks.harness import fold as F
-from benchmarks.harness import prior
-from benchmarks.harness.report import Report
-from benchmarks.harness.timing import L2Flush, measure, paired_ratio
+from fold_attention.decode.heuristics import refine_for, shared_runs_wide, weight_terms_for
 
 LOG2E = 1.4426950408889634
 CAPTURES = ("qwen3-30b-l24-d128", "gptoss-20b-l9-d64")
