@@ -12,6 +12,7 @@ import cutlass
 import cutlass.utils.hopper_helpers as sm90
 from cutlass import Float32, Int32, cute
 from cutlass.cute.nvgpu import warpgroup
+from cutlass.experimental import primitives
 
 from .cache import KBR, swizzle_of
 from .config import BN
@@ -103,7 +104,7 @@ def _mass_rows(
             prow = paged_row(mPgT, breq, hkv, pkey, PS, HKV)
         kscales.append(ld_scale_cg(pEk + cutlass.Int64(prow) * 2))
         if pr < NPR and pr != skip:
-            cute.arch.cp_async_shared_global(
+            primitives.cp_async_shared_global(
                 sK.iterator
                 + (pr * D + (((pu ^ ((pkey >> SWRS) & SWM)) ^ ((pr >> SWRS) & SWM)) << 4)),
                 gKa.iterator + (prow * D + pu * 16),
@@ -485,10 +486,10 @@ def mass_z(
         qo = (bh * G + gsrc) * D + cu * 16
         so = gq8 * D + ((cu ^ ((gq8 >> SWRS) & SWM)) << 4)
         if u < NQU:
-            cute.arch.cp_async_shared_global(sQ.iterator + so, mQa.iterator + qo, 16, "cg")
+            primitives.cp_async_shared_global(sQ.iterator + so, mQa.iterator + qo, 16, "cg")
         else:
             if u < 2 * NQU:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sQ.iterator + NQU * 16 + so, mQb.iterator + qo, 16, "cg"
                 )
     cute.arch.cp_async_commit_group()

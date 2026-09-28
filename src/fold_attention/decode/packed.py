@@ -28,6 +28,7 @@ import cutlass
 import cutlass.utils.hopper_helpers as sm90
 from cutlass import cute
 from cutlass.cute.nvgpu import warpgroup
+from cutlass.experimental import primitives
 from cutlass.experimental.primitives.nvvm_wrapper import (
     MMALayout,
     stmatrix,
@@ -397,9 +398,9 @@ def packed_kernel(
         so = qtile_off(nq, hq * NCU + cu, NQR)
         if uq < NQR * NCU:
             if pq == 0:
-                cute.arch.cp_async_shared_global(sQ.iterator + so, mQa.iterator + qo, 16, CM)
+                primitives.cp_async_shared_global(sQ.iterator + so, mQa.iterator + qo, 16, CM)
             else:
-                cute.arch.cp_async_shared_global(sQ.iterator + so, mQb.iterator + qo, 16, CM)
+                primitives.cp_async_shared_global(sQ.iterator + so, mQb.iterator + qo, 16, CM)
     if cutlass.const_expr(R):
         NUU = R * NCU
         for it in cutlass.range_constexpr((3 * NUU + NT - 1) // NT):
@@ -411,7 +412,7 @@ def packed_kernel(
                 if ur >= R and ur < 2 * R:
                     zero16((cute.recast_ptr(sU.iterator, None, cutlass.Uint8) + uo).toint())
                 else:
-                    cute.arch.cp_async_shared_global(
+                    primitives.cp_async_shared_global(
                         sU.iterator + uo,
                         mU.iterator + (bh * R * D + (ur % R) * D + cuu * 16),
                         16,
@@ -768,7 +769,7 @@ def packed_kernel(
         )
         if cutlass.const_expr(TAIL):
             if shas and lane < D // 8:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sV.iterator + gather_dst(kw0 + sidx, lane, D, TK, 2, 1),
                     mVbk.iterator + (vrow * D + lane * 8),
                     16,

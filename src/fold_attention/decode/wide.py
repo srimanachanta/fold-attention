@@ -32,6 +32,7 @@ import cutlass
 import cutlass.utils.hopper_helpers as sm90
 from cutlass import cute
 from cutlass.cute.nvgpu import warpgroup
+from cutlass.experimental import primitives
 from cutlass.experimental.primitives.nvvm_wrapper import cp_async_bulk_shared_cluster_global
 
 from .cache import KBR, swizzle_of
@@ -326,7 +327,7 @@ def _producer(
                 row = base + rr
                 if cutlass.const_expr(PAGED):
                     row = sSeg[(sr, rr // SEGW)] + rr % SEGW
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sV.iterator + (st * BN * D + gather_dst(rr, vuu, D, BN, 2, 1)),
                     gV.iterator + (cutlass.Int64(row) * D + vuu * 8),
                     16,

@@ -2,6 +2,7 @@
 
 import cutlass
 from cutlass import cute
+from cutlass.experimental import primitives
 
 from .device import gmem_vec, smem_vec
 
@@ -67,7 +68,7 @@ def combine(
         sVr = smem.allocate_tensor(cutlass.Float32, cute.make_layout(WARPS * 32 * VS), 16)
         sb = tidx * VS
         for q in cutlass.range_constexpr(CPL * TR // 4):
-            cute.arch.cp_async_shared_global(
+            primitives.cp_async_shared_global(
                 sVr.iterator + (sb + 4 * q), mVr.iterator + ((bh * D + c0) * TR + 4 * q), 16, "cg"
             )
         cute.arch.cp_async_commit_group()

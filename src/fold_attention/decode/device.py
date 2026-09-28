@@ -3,6 +3,7 @@ the mass reference."""
 
 import cutlass
 from cutlass import cute
+from cutlass.experimental import primitives
 from cutlass.experimental.primitives.nvvm_wrapper import (
     cp_async_bulk_shared_cluster_global,
     nanosleep,
@@ -594,11 +595,11 @@ def gather_rows(
         rr = it * NROW + r0
         if (ms[(it * NROW) // 32] >> ((it * NROW) % 32)) & 1 != 0:
             if cutlass.const_expr(step):
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     dst0 + it * NROW * row_elems(D, EB, SW), src0 + it * NROW * D, 16, CM
                 )
             else:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sDst.iterator + gather_dst(rr, uu, D, BN, EB, SW),
                     gSrc.iterator
                     + (cutlass.Int64(gather_row(sSeg, sslot, base, rr, SEGW, NSEG, PG)) * D + c0),
@@ -649,11 +650,11 @@ def gather_warp_rows(
         rr = kw0 + it * RPI + r0
         if (mw >> (it * RPI)) & 1 != 0:
             if cutlass.const_expr(step):
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     dst0 + it * RPI * row_elems(D, EB, SW), src0 + it * RPI * D, 16, CM
                 )
             else:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sDst.iterator + gather_dst(rr, uu, D, BN, EB, SW),
                     gSrc.iterator
                     + (cutlass.Int64(gather_row(sSeg, sslot, base, rr, SEGW, NSEG, PG)) * D + c0),
@@ -734,7 +735,7 @@ def load_basis(
     for vi in cutlass.range_constexpr((NVRU + NT - 1) // NT):
         vu = vi * NT + tidx
         if vu < NVRU:
-            cute.arch.cp_async_shared_global(
+            primitives.cp_async_shared_global(
                 cute.recast_ptr(sV.iterator, None, cutlass.Float32) + vu * 4,
                 mVr.iterator + (bh * D * R + vu * 4),
                 16,

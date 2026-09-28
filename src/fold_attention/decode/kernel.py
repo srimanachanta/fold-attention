@@ -31,6 +31,7 @@ import cutlass
 import cutlass.utils.hopper_helpers as sm90
 from cutlass import cute
 from cutlass.cute.nvgpu import warpgroup
+from cutlass.experimental import primitives
 from cutlass.experimental.primitives.nvvm_wrapper import MMALayout, stmatrix
 
 from .cache import KBR, swizzle_of
@@ -408,10 +409,10 @@ def decode_kernel(
         qo = (bhs * UNIQUE_G + gsrc) * D + cu * 16
         so = gq8 * D + ((cu ^ ((gq8 >> SWRS) & SWM)) << 4)
         if u < NQU:
-            cute.arch.cp_async_shared_global(sQa.iterator + so, mQa.iterator + qo, 16, CM)
+            primitives.cp_async_shared_global(sQa.iterator + so, mQa.iterator + qo, 16, CM)
         else:
             if u < 2 * NQU:
-                cute.arch.cp_async_shared_global(sQb.iterator + so, mQb.iterator + qo, 16, CM)
+                primitives.cp_async_shared_global(sQb.iterator + so, mQb.iterator + qo, 16, CM)
     if cutlass.const_expr(TAIL_RANK):
         # U's rows follow both Q planes, swizzled as a Q row is
         NUU = TAIL_RANK * (D // 16)
@@ -420,7 +421,7 @@ def decode_kernel(
             ur = 2 * NG * 8 + uu // (D // 16)
             cuu = uu % (D // 16)
             if uu < NUU:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sQa.iterator + (ur * D + ((cuu ^ ((ur >> SWRS) & SWM)) << 4)),
                     mU.iterator + (bh * TAIL_RANK * D + uu * 16),
                     16,
@@ -985,7 +986,7 @@ def decode_kernel(
                 # the virtual key's V row, by its own warp, in V's group
                 if shas:
                     if lane < D // 8:
-                        cute.arch.cp_async_shared_global(
+                        primitives.cp_async_shared_global(
                             sV.iterator + gather_dst(skey, lane, D, BN, 2, 1),
                             mVbk.iterator + (vrow * D + lane * 8),
                             16,

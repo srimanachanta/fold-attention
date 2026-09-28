@@ -10,6 +10,7 @@ import cutlass
 import torch
 from cutlass import Float32, Int32, Int64, Uint32, cute
 from cutlass.cute.runtime import from_dlpack
+from cutlass.experimental import primitives
 
 from ..utils import Launch, compile_cached, current_stream, full_carveout
 from .cache import swizzle_of
@@ -361,7 +362,7 @@ def mass_front(
             pu = tidx % NU
             pkey = pks[it]
             if pr < NPR and pr != skip:
-                cute.arch.cp_async_shared_global(
+                primitives.cp_async_shared_global(
                     sK.iterator
                     + (pr * D + (((pu ^ ((pkey >> SWRS) & SWM)) ^ ((pr >> SWRS) & SWM)) << 4)),
                     mKa.iterator + (prs[it] * D + pu * 16),
