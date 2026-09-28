@@ -871,7 +871,7 @@ class FoldBackwardSm90:
                         lq[1](m_block_min, producer_state=producer_state)
                         lq[3](m_block_min, producer_state=producer_state)
                         producer_state.advance()
-                        for m_block in cutlass.range(m_block_min + 1, m_block_max, unroll=1):
+                        for m_block in cutlass.range(m_block_min + 1, m_block_max, 1, unroll=1):
                             pipeline_Q.producer_acquire(producer_state)
                             lq[0](m_block, producer_state=producer_state)
                             lq[2](m_block, producer_state=producer_state)
@@ -1074,7 +1074,7 @@ class FoldBackwardSm90:
                 )
                 for _g in cutlass.range(self.head_loop, unroll=1):
                     for m_block in cutlass.range(
-                        m_block_min + 1 - min(_g, 1), m_block_max, unroll=1
+                        m_block_min + 1 - min(_g, 1), m_block_max, 1, unroll=1
                     ):
                         consumer_state, ds_cnt = block(
                             m_block, consumer_state, ds_cnt, m_mask_end=m_mask_end, first=False
@@ -1783,7 +1783,7 @@ class FoldBackwardSm90:
                     ),
                     (None,),
                 )
-                for m_block in cutlass.range(m_block_min, m_block_max, unroll=1):
+                for m_block in cutlass.range(m_block_min, m_block_max, 1, unroll=1):
                     for wg in cutlass.range_constexpr(self.num_wg_mma):
                         cute.arch.cp_async_bulk_wait_group(self.num_wg_mma - 1 - wg, read=True)
                         cute.arch.barrier_arrive(
