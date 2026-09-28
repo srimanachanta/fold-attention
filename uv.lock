@@ -141,7 +141,7 @@ wheels = [
 
 [[package]]
 name = "flash-attn-4"
-version = "4.0.0b32"
+version = "4.0.0b31"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "apache-tvm-ffi" },
@@ -152,9 +152,9 @@ dependencies = [
     { name = "torch-c-dlpack-ext" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/c5/83d5a216d0518bc2ca4320a9f10e7f2cd794bf543863608ca136e28112dc/flash_attn_4-4.0.0b32.tar.gz", hash = "sha256:8fbdca2ef29080a89a396d3be8c53b3925145c266e60cdde0c15d0eb73c8bc09", size = 401487, upload-time = "2026-09-23T08:21:22.003Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/05/8034f96223f4d68a449a6e4d8621de57df1ca87b35220e38ffd60eaf0140/flash_attn_4-4.0.0b31.tar.gz", hash = "sha256:c686b54d7709c22e13c9f5da5371299aca0db2fdd90e6252d4047b4cf7b92e12", size = 385897, upload-time = "2026-09-16T08:21:32.495Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/d0/b1e9ab8eefc9e67179a372c3e1a8e9f83d963c3a8e5bd4c738e55dd134c0/flash_attn_4-4.0.0b32-py3-none-any.whl", hash = "sha256:9299da3524d579d84eb92954d3243aa095d55ebdafcf80d6a9766fd96fe8a562", size = 426775, upload-time = "2026-09-23T08:21:20.447Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/28/6e0452ec7c42934267be78aa4b2e7b1f886084e9750d8b1ba7ecff2c20f5/flash_attn_4-4.0.0b31-py3-none-any.whl", hash = "sha256:6eda5890b29e90fc46e19a47b4018effae7c042f75ee8aaaeebd3f56ccd82edf", size = 411043, upload-time = "2026-09-16T08:21:31.185Z" },
 ]
 
 [package.optional-dependencies]
@@ -188,14 +188,14 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "flash-attn-4", specifier = ">=4.0.0b31" },
-    { name = "flash-attn-4", extras = ["cu13"], marker = "extra == 'cu13'", specifier = ">=4.0.0b31" },
-    { name = "numpy", specifier = ">=2.5.3" },
-    { name = "nvidia-cutlass-dsl", specifier = ">=4.7.1" },
-    { name = "nvidia-cutlass-dsl", extras = ["cu13"], marker = "extra == 'cu13'", specifier = ">=4.7.1" },
+    { name = "flash-attn-4", specifier = "==4.0.0b31" },
+    { name = "flash-attn-4", extras = ["cu13"], marker = "extra == 'cu13'", specifier = "==4.0.0b31" },
+    { name = "numpy", specifier = ">=1.26" },
+    { name = "nvidia-cutlass-dsl", specifier = ">=4.8.0" },
+    { name = "nvidia-cutlass-dsl", extras = ["cu13"], marker = "extra == 'cu13'", specifier = ">=4.8.0" },
     { name = "quack-kernels", specifier = ">=0.6.5" },
     { name = "quack-kernels", extras = ["cu13"], marker = "extra == 'cu13'", specifier = ">=0.6.5" },
-    { name = "torch", specifier = ">=2.14.0", index = "https://download.pytorch.org/whl/cu130" },
+    { name = "torch", specifier = ">=2.9", index = "https://download.pytorch.org/whl/cu130" },
 ]
 provides-extras = ["cu13"]
 
