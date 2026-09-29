@@ -1,5 +1,9 @@
 # FoldAttention
 
+**FoldAttention: Declared-Reference Softmax for Fast Decode and Deterministic Backward** \
+Sriman Achanta \
+Paper: https://arxiv.org/abs/2609.33410
+
 <picture>
   <img src="assets/hero.png" alt="FoldAttention overview: declared-reference softmax, decode speedup, and deterministic backward throughput" />
 </picture>
