@@ -2914,11 +2914,9 @@ def test_the_front_register_rule_follows_the_measurements():
             )
             == 6
         )
-    # D64 squeezes two registers, and only past a wave: the one-term truncated
-    # register-V G8 build at 65
-    assert front_min_blocks(64, 8, True, True, True, -1, 1, 8 * 132, 132) == 8
-    assert front_min_blocks(64, 8, True, True, True, -1, 1, 7 * 132, 132) == 0
+    # D64 never squeezes
     assert front_min_blocks(64, 8, True, True, True, -1, 1) == 0
+    assert front_min_blocks(64, 8, False, False, True, 16, 1) == 0
 
 
 def _wide_levels(NBH, S, L, G, seed=5, T=1e4, draft=0):

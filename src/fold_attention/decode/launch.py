@@ -803,8 +803,6 @@ def _prepare(
             skip,
             tail_rank,
             int(weight_terms),
-            NBH * split,
-            sms,
             one=split == 1,
         )
     if min_blocks is None:

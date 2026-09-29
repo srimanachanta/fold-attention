@@ -601,7 +601,7 @@ class FoldKVCache:
 
     def _front_early(self):
         sms = torch.cuda.get_device_properties(self.device).multi_processor_count
-        return front_early(self.n_groups, sms, self.depth is not None)
+        return front_early(self.n_groups, sms)
 
     def _auto_split(self):
         mean = sum(self.lens) / self.batch
