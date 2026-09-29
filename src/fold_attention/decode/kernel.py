@@ -312,9 +312,8 @@ def decode_kernel(
     # of them, and the gathers and weights that follow them, on the last split,
     # whose CTA then ends the grid, so the splits interleave by tile. A fixed
     # chunk keeps its contiguous range, which is what keeps a request's sums
-    # independent of its batch. An 8-bit V and a cascade's levels keep
-    # contiguous chunks too.
-    INTERLEAVE = not (V8 or cfg.chunk_keys > 0 or SHARED or SLOTS != SPLIT or SLOT0)
+    # independent of its batch. A cascade's levels keep contiguous chunks too.
+    INTERLEAVE = not (cfg.chunk_keys > 0 or SHARED or SLOTS != SPLIT or SLOT0)
     TSTEP = SPLIT * BN if INTERLEAVE else BN
     lo, hi = split_bounds(slen, sp, SPLIT, BN, INTERLEAVE, cfg.chunk_keys)
     gKa, gKb, gEk, gV, gVb = cache_views(bh, S, SP, D, cfg.ek_stride, PAGED, mKa, mKb, mEk, mV, mVb)
