@@ -11,6 +11,6 @@ shared-prefix and speculative partials combine by plain addition.
 from .interface import fold_attn_func, fold_attn_varlen_func, fold_attn_with_kvcache
 from .kv_cache import FoldKVCache
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 __all__ = ["FoldKVCache", "fold_attn_func", "fold_attn_varlen_func", "fold_attn_with_kvcache"]
